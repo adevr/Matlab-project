@@ -357,8 +357,8 @@ else
             hold off
             legend('Euler', 'Euler Modificado', 'RK2', 'RK4', 'Solução Exacta')
             set(handles.uitable2,'ColumnName',{'t','Solução Exacta',...
-                'Euler','EulerM', 'RK2', 'RK4', 'Erro Euler', 'Erro EulerM', 'Erro RK2', 'Erro RK4'});
-            cTabela = [t.',yExacta.', yEuler.',yEulerM.', yRK2.', yRK4.', abs(yEuler-yExacta).', abs(yEulerM-yExacta).', abs(yRK2-yExacta).', abs(yRK4-yExacta).'];
+                'Euler','EulerM', 'RK2', 'RK4', 'Erro Euler', 'Erro EulerM', 'Erro RK2', 'Erro '});
+            cTabela = [t.',yExacta.', yODE45.',abs(yODE45-yExacta).'];
             set(handles.uitable2,'Data',num2cell(cTabela));
     end
     
