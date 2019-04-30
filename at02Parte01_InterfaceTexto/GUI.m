@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 25-Apr-2019 18:32:38
+% Last Modified by GUIDE v2.5 30-Apr-2019 23:10:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -391,5 +391,12 @@ end
 % --- Executes on button press in xlsxExtract.
 function xlsxExtract_Callback(hObject, eventdata, handles)
 % hObject    handle to xlsxExtract (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in reset.
+function reset_Callback(hObject, eventdata, handles)
+% hObject    handle to reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
