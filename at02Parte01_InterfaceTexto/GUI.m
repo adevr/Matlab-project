@@ -290,7 +290,9 @@ else
     yEulerM = N_Euler_v2(f,a,b,n,y0); % chamada ao metodo de Euler Modificado
     yRK2   = N_RK2(f,a,b,n,y0);% chamada ao método RK2
     yRK4   = N_RK4(f,a,b,n,y0);% chamada ao método RK4
-    yODE45 =  ODE45 (f,a,b,n,y0); % chamada ao metodo ODE45
+    yRK3 = N_RK3(f, a, b, n, y0); %chamada ao método RK3
+    [~,yODE45] =  ODE45 (f,a,b,n,y0); % chamada ao metodo ODE45
+    yODE45 = yODE45.';
     t = a:(b-a)/n:b; % discretização do domínio
     
     sExacta = dsolve(['Dy=' strF],['y(' num2str(t(1)) ')=' strY0]);
@@ -353,12 +355,23 @@ else
             plot(t, yEulerM, 'b')
             plot(t, yRK2, 'y')
             plot(t, yRK4, 'm')
+            plot(t, yODE45, 'c')
             plot(t, yExacta, 'k')
             hold off
-            legend('Euler', 'Euler Modificado', 'RK2', 'RK4', 'Solução Exacta')
+            legend('Euler', 'Euler Modificado', 'RK2', 'RK3', 'RK4','ODE45' , 'Solução Exacta')
             set(handles.uitable2,'ColumnName',{'t','Solução Exacta',...
-                'Euler','EulerM', 'RK2', 'RK4', 'Erro Euler', 'Erro EulerM', 'Erro RK2', 'Erro RK4'});
-            cTabela = [t.',yExacta.', yEuler.',yEulerM.', yRK2.', yRK4.', abs(yEuler-yExacta).', abs(yEulerM-yExacta).', abs(yRK2-yExacta).', abs(yRK4-yExacta).'];
+                'Euler','EulerM', 'RK2','RK3' , 'RK4', 'ODE45','Erro Euler', 'Erro EulerM', 'Erro RK2','Erro RK3', 'Erro RK4','Erro ODE45'});
+            cTabela = [t.',yExacta.', yEuler.',yEulerM.', yRK2.', yRK4.', yODE45.', abs(yEuler-yExacta).', abs(yEulerM-yExacta).', abs(yRK2-yExacta).', abs(yRK3-yExacta).' ,abs(yRK4-yExacta).' ,abs(yODE45-yExacta).'];
+            set(handles.uitable2,'Data',num2cell(cTabela));
+        case 8
+            plot(t,yRK3,'-r')
+            hold on
+            plot(t,yExacta,'b')
+            hold off
+            legend('Runge Kutta Ordem 3','Solução Exacta')
+            set(handles.uitable2,'ColumnName',{'t','Solução Exacta',...
+                'RK3','Erro RK3'});
+            cTabela = [t.',yExacta.', yRK3.',abs(yRK3-yExacta).'];
             set(handles.uitable2,'Data',num2cell(cTabela));
     end
     
@@ -372,27 +385,43 @@ function csvExport_Callback(hObject, eventdata, handles)
 method = handles.selectMethod.Value;
 switch(method)
     case 2
-        writecell(get(handles.uitable2, 'Data'),'/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/table.csv');
-
+        tHeader = {'T' 'Solução Exata' 'Euler' 'Erro Euler'};
+        extractCSV(tHeader, get(handles.uitable2, 'Data'));
+    
     case 3
-        headers = {'T', 'Solução Exata', 'Euler Melhorado', 'Erro Euler Melhorado'};
-        csvwrite('/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/table.csv', get(handles.uitable2, 'Data'), headers);
-
+        tHeader = {'T' 'Solução Exata' 'Euler Melhorado' 'Erro Euler Melhorado'};
+        extractCSV(tHeader, get(handles.uitable2, 'Data'));
+    
     case 4
-        headers = {'T', 'Solução Exata', 'RK2', 'Erro RK2'};
-        csvwrite('/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/table.csv', get(handles.uitable2, 'Data'), headers);
-
+        tHeader = {'T', 'Solução Exata', 'RK2', 'Erro RK2'};
+        extractCSV(tHeader, get(handles.uitable2, 'Data'));
+        
     case 5
-        headers = {'T', 'Solução Exata', 'RK4', 'Erro RK4'};
-        csvwrite('/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/table.csv', get(handles.uitable2, 'Data'), headers);
-
+        tHeader = {'T', 'Solução Exata', 'RK4', 'Erro RK4'};
+    	extractCSV(tHeader, get(handles.uitable2, 'Data'));
+        
+    case 6
+        tHeader = {'T' 'Solução Exata' 'ODE45' 'Erro ODE45' };
+        extractCSV(tHeader, get(handles.uitable2, 'Data'));
+        
+    case 7
+        tHeader = {'T' 'Solução Exata' 'Euler' 'EulerM' 'RK2' 'RK3' 'RK4' 'ODE45' 'Erro Euler' 'Erro EulerM' 'Erro RK2' 'Erro RK3' 'Erro EK4' 'Erro ODE45'};
+        extractCSV(tHeader, get(handles.uitable2, 'Data'));    
+    case 8
+        tHeader = {'T', 'Solução Exata', 'RK3', 'Erro RK3'};
+        extractCSV(tHeader, get(handles.uitable2, 'Data'));
 end
+msgbox('Extração Efetuada','Sucesso');
+
 
 % --- Executes on button press in xlsxExtract.
 function xlsxExtract_Callback(hObject, eventdata, handles)
 % hObject    handle to xlsxExtract (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+writecell(get(handles.uitable2, 'Data'),'/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/M_tab.xls');
+type '/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/M_tab.xls';
+msgbox('Extração Efetuada','Sucesso');
 
 
 % --- Executes on button press in reset.
@@ -400,3 +429,12 @@ function reset_Callback(hObject, eventdata, handles)
 % hObject    handle to reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.eA, 'string', 0);
+set(handles.eB, 'string', 0);
+set(handles.eN, 'string', 0);
+set(handles.eY0, 'string', 0);
+set(handles.eF, 'string', '');
+set(handles.selectMethod, 'Value', 1);
+cla reset;
+set(handles.uitable2, 'Data', {});
+msgbox('Reset Efetuado','Sucesso');
