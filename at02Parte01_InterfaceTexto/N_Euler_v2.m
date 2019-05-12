@@ -9,11 +9,12 @@
 %   y0 - condição inicial t=a -> y=y0
 %Retorno: 
 %   y - vector das aproximações discretas da solução exacta
-%   y(i+1) = y(i)+h*f(t(i),y(i)) , i =0,1,...,n-1
+%   y(i+1)=y(i)+h*f(t(i),y(i)) , i =0,1,...,n-1
+%   y(i+1)=y(i)+h/2*(f(t(i), y(i))+f(t(i+1), y(i+1)))
 %Finalizada a: 03/05/2019
 %Modificado por: AlexandreReis      - a21280926@alunos.isec.pt
-%                Celso Jordão       -
-%                Fábio CapoBianchi  -
+%                Celso Jordão       - a21130067@alunos.isec.pt
+%                Fábio CapoBianchi  - a21280924@alunos.isec.pt
 function y=N_Euler_v2(f,a,b,n,y0)
 h=(b-a)/n;
 t=a:h:b;

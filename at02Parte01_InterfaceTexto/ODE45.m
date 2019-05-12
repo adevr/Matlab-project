@@ -12,8 +12,8 @@
 %   y(1) = y0
 %Finalizada a: 03/05/2019
 %Modificado por: AlexandreReis      - a21280926@alunos.isec.pt
-%                Celso Jordão       -
-%                Fábio CapoBianchi  -
+%                Celso Jordão       - a21130067@alunos.isec.pt
+%                Fábio CapoBianchi  - a21280924@alunos.isec.pt
 
 function [t,y] = ODE45 (f,a,b,n,y0)
 

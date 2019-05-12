@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 30-Apr-2019 23:10:46
+% Last Modified by GUIDE v2.5 05-May-2019 23:08:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -267,37 +267,40 @@ if isnan(str2double(eA)) == 1 | isnan(str2double(eB)) == 1 | isnan(str2double(eN
     elseif(isnan(str2double(eB)))
         set(handles.eB,'string', 0);
         errordlg(sprintf('O valor de b passou para 0, pois o seu valor era inválido!\nInserir dados válidos no campo b!'));
-    elseif(isnan(str2double(eN)))
-        set(handles.eN,'string', 0);
+    elseif(isnan(str2double(eN)) & eN == 0)
+        set(handles.eN,'string', 1);
         errordlg(sprintf('O valor de n passou para 0, pois o seu valor era inválido!\nInserir dados válidos no campo n!'));
     elseif(isnan(str2double(eY0)))
         set(handles.eY0,'string', 0);
         errordlg(sprintf('O valor de y0 passou para 0, pois o seu valor era inválido!\nInserir dados válidos no campo y0!'));
     end
-    
+
 elseif str2double(eA) == 0 & str2double(eB)==0 & str2double(eN)==0 & str2double(eY0)==0
     warndlg(sprintf('Os valores de A,B,N e Y0 estão a 0\nInserir valores inteiros!'));
 
 else
-    
+
     f = @(t,y) eval(vectorize(strF));
     a = str2double(get(handles.eA, 'String'));
     b = str2double(get(handles.eB, 'String'));
     n = str2double(get(handles.eN, 'String'));
     y0 = str2double(get(handles.eY0, 'String'));
-    
-    yEuler = N_Euler(f,a,b,n,y0); % chamada ao método de Euler
-    yEulerM = N_Euler_v2(f,a,b,n,y0); % chamada ao metodo de Euler Modificado
-    yRK2   = N_RK2(f,a,b,n,y0);% chamada ao método RK2
-    yRK4   = N_RK4(f,a,b,n,y0);% chamada ao método RK4
-    yRK3 = N_RK3(f, a, b, n, y0); %chamada ao método RK3
-    [~,yODE45] =  ODE45 (f,a,b,n,y0); % chamada ao metodo ODE45
-    yODE45 = yODE45.';
-    t = a:(b-a)/n:b; % discretização do domínio
-    
+
+    try
+        yEuler = N_Euler(f,a,b,n,y0); % chamada ao método de Euler
+        yEulerM = N_Euler_v2(f,a,b,n,y0); % chamada ao metodo de Euler Modificado
+        yRK2   = N_RK2(f,a,b,n,y0);% chamada ao método RK2
+        yRK4   = N_RK4(f,a,b,n,y0);% chamada ao método RK4
+        yRK3 = N_RK3(f, a, b, n, y0); %chamada ao método RK3
+        [~,yODE45] =  ODE45 (f,a,b,n,y0); % chamada ao metodo ODE45
+        yODE45 = yODE45.';
+        t = a:(b-a)/n:b; % discretização do domínio
+    catch
+        warndlg('Função inválida, rever inputs!')
+    end
     sExacta = dsolve(['Dy=' strF],['y(' num2str(t(1)) ')=' strY0]);
     yExacta = eval(vectorize(char(sExacta)));
-    
+
     switch(method)
         case 2
             plot(t,yEuler,'-r')
@@ -374,7 +377,7 @@ else
             cTabela = [t.',yExacta.', yRK3.',abs(yRK3-yExacta).'];
             set(handles.uitable2,'Data',num2cell(cTabela));
     end
-    
+
 end
 
 % --- Executes on button press in csvExport.
@@ -387,26 +390,26 @@ switch(method)
     case 2
         tHeader = {'T' 'Solução Exata' 'Euler' 'Erro Euler'};
         extractCSV(tHeader, get(handles.uitable2, 'Data'));
-    
+
     case 3
         tHeader = {'T' 'Solução Exata' 'Euler Melhorado' 'Erro Euler Melhorado'};
         extractCSV(tHeader, get(handles.uitable2, 'Data'));
-    
+
     case 4
         tHeader = {'T', 'Solução Exata', 'RK2', 'Erro RK2'};
         extractCSV(tHeader, get(handles.uitable2, 'Data'));
-        
+
     case 5
         tHeader = {'T', 'Solução Exata', 'RK4', 'Erro RK4'};
     	extractCSV(tHeader, get(handles.uitable2, 'Data'));
-        
+
     case 6
         tHeader = {'T' 'Solução Exata' 'ODE45' 'Erro ODE45' };
         extractCSV(tHeader, get(handles.uitable2, 'Data'));
-        
+
     case 7
         tHeader = {'T' 'Solução Exata' 'Euler' 'EulerM' 'RK2' 'RK3' 'RK4' 'ODE45' 'Erro Euler' 'Erro EulerM' 'Erro RK2' 'Erro RK3' 'Erro EK4' 'Erro ODE45'};
-        extractCSV(tHeader, get(handles.uitable2, 'Data'));    
+        extractCSV(tHeader, get(handles.uitable2, 'Data'));
     case 8
         tHeader = {'T', 'Solução Exata', 'RK3', 'Erro RK3'};
         extractCSV(tHeader, get(handles.uitable2, 'Data'));
@@ -419,8 +422,21 @@ function xlsxExtract_Callback(hObject, eventdata, handles)
 % hObject    handle to xlsxExtract (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-writecell(get(handles.uitable2, 'Data'),'/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/M_tab.xls');
-type '/home/adevreis/Documents/Matlab-project/at02Parte01_InterfaceTexto/M_tab.xls';
+fileDir=uigetdir('','Selecciona a pasta para guardar o teu XLS');
+xlsDetail=inputdlg({'Filename:'},...
+                            'XLS workbook details',1,{'Test.xls'}) ;
+if ismac
+    fileName  = [fileDir,'/',xlsDetail{1}];
+elseif isunix
+    fileName  = [fileDir,'/',xlsDetail{1}];
+elseif ispc
+    fileName  = [fileDir,'\',xlsDetail{1}];
+else
+    warndlg('Sistema Operativo não suportado');
+end
+
+writecell(get(handles.uitable2, 'Data'),fileName);
+type fileName;
 msgbox('Extração Efetuada','Sucesso');
 
 
@@ -438,3 +454,11 @@ set(handles.selectMethod, 'Value', 1);
 cla reset;
 set(handles.uitable2, 'Data', {});
 msgbox('Reset Efetuado','Sucesso');
+
+
+% --------------------------------------------------------------------
+function Autor_Callback(hObject, eventdata, handles)
+% hObject    handle to Autor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+msgbox(sprintf('Alexandre Reis - 21280926\n\nCelso Jordão - 21130067\n\nFábio Capobianchi - 21280924'));
