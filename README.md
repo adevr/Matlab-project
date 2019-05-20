@@ -36,3 +36,5 @@ Please feel free to send pull request, and contact me if you want to contribute!
 ## Authors
 
 - **Alex Reis** - _Development_ - [Alex Reis](https://github.com/adevr)
+- **Celso Jordão** - _Development_ - [Celso Jordão](https://github.com/sa7sa)
+- **Fábio Capobianchi** - _Development_ - [Fábio Capobianchi](https://github.com/FabioCapobianchi)
