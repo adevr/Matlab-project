@@ -1,6 +1,6 @@
 # MATLAB PROJECT
 
-![Thumbnail](thumbnail.png)
+![Thumbnail](https://raw.githubusercontent.com/adevr/Matlab-project/master/tumbnail.png)
 
 A Numeric Methods GUI for solving initial value problems!
 
