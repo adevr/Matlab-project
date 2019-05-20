@@ -21,7 +21,7 @@ Inside the AT02PARTE01_INTERFACETEXTO you can see all the files to build and exe
 To start the gui you just need to execute de following inside the MATLAB command window or run it in the "Run" button.
 
 ```
-gui
+GUI
 ```
 
 ## Built With
